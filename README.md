@@ -1,62 +1,90 @@
-# 📈 Longest Increasing Subsequence Optimization
+# ¿Hasta dónde podemos optimizar un algoritmo? Python & Rust — Python Bilbao
 
-This repository contains various implementations and optimizations of the Longest Increasing Subsequence (LIS) problem in both Python and Rust. It includes performance comparisons and analysis tools to understand the efficiency of different approaches.
+Materiales y código de benchmarking de la charla **«¿Hasta dónde podemos
+optimizar un algoritmo? Python & Rust»**, presentada por Pablo García en Python
+Bilbao el 30 de octubre de 2025, en la Universidad de Deusto.
 
-## 🎯 Problem Description
+La charla utiliza el problema [Longest Increasing Subsequence
+(LIS)](https://en.wikipedia.org/wiki/Longest_increasing_subsequence) para
+separar distintas fuentes de mejora del rendimiento: la complejidad
+algorítmica, las decisiones de implementación, el comportamiento del runtime,
+el lenguaje y el modo de compilación de Rust.
 
-The Longest Increasing Subsequence problem is a classic algorithmic challenge: given a sequence of numbers, find a subsequence (not necessarily contiguous) where all elements are in strictly increasing order, and this subsequence is as long as possible.
+## Contenido
 
-## 🛠️ Implementations
+- [`slides.pdf`](slides.pdf): diapositivas presentadas en el evento.
+- [`python/`](python/): implementaciones en Python, desde enfoques
+  exponenciales hasta una solución O(n log n).
+- [`rust/`](rust/): implementaciones equivalentes en Rust ejecutables con
+  `rust-script`.
+- [`python/generator.py`](python/generator.py): generación reproducible de los
+  datos de entrada.
+- [`benchmarks.sh`](benchmarks.sh): comandos de Hyperfine utilizados para
+  recoger los resultados.
+- [`analysis.py`](analysis.py): notebook de Marimo para comparar y visualizar
+  los resultados de Hyperfine.
 
-### Python Implementations
+Los datos de entrada y los resultados de los benchmarks se generan localmente
+y están ignorados por Git. Dependen de la máquina utilizada y pueden
+reproducirse a partir del código versionado.
 
-- `lis_bruteforce.py`: Brute force approach (exponential time)
-- `lis_bruteforce_numpy.py`: NumPy-optimized brute force
-- `lis_dp_n2.py`: Dynamic Programming O(n²) solution
-- `lis_nlogn.py`: Optimized O(n log n) solution using patience sorting
-- `lis_recursive.py`: Basic recursive implementation
-- `lis_recursive_np.py`: NumPy-optimized recursive version
-- `lis_recursive_opt_1.py`: First optimization of recursive approach
-- `lis_recursive_opt_2.py`: Second optimization of recursive approach
+## Requisitos
 
-### Rust Implementations
+- [uv](https://docs.astral.sh/uv/) para Python y las dependencias del proyecto.
+- [rust-script](https://rust-script.org/) para ejecutar los programas Rust
+  independientes.
+- [Hyperfine](https://github.com/sharkdp/hyperfine) para los benchmarks.
 
-- `lis_bruteforce.rs`: Brute force approach in Rust
-- `lis_dp_n2.rs`: O(n²) Dynamic Programming solution
-- `lis_nlogn.rs`: O(n log n) optimized solution
-- `lis_recursive.rs`: Recursive implementation
+Instala el entorno de Python a partir del lockfile:
 
-## 📊 Analysis Tools
-
-The project includes comprehensive analysis tools:
-
-- `analysis.py`: Jupyter/Marimo notebook for visualizing and comparing performance
-- `generator.py`: Test data generation utilities
-- `utils.py`: Common utilities and helper functions
-
-## 🔧 Requirements
-
-### Python
-uv: https://docs.astral.sh/uv/
-
-### Rust
-rust-script: https://rust-script.org/
-
-## 📁 Project Structure
-
-```
-.
-├── analysis.py           # Performance analysis notebook
-├── data/                # Test sequences of various sizes
-├── python/              # Python implementations
-├── results/             # Performance test results
-└── rust/                # Rust implementations
+```bash
+uv sync --frozen
 ```
 
-## 🚀 Performance
+## Ejecutar las implementaciones
 
-Performance results and comparisons can be found in the `results/` directory. The analysis notebook provides visualizations and detailed comparisons between different implementations.
+Primero genera los datos deterministas compartidos:
 
-## 📄 License
+```bash
+uv run python python/generator.py
+```
 
-This project is open source. Feel free to use, modify, and distribute as needed.
+Después ejecuta cualquier implementación con uno de los tamaños disponibles:
+
+```bash
+uv run python python/lis_nlogn.py 90
+rust-script rust/lis_nlogn.rs 90
+```
+
+Ambos programas leen el mismo archivo `data/sequence_90.json` e imprimen la
+longitud de una subsecuencia estrictamente creciente de longitud máxima.
+
+## Implementaciones
+
+| Enfoque | Python | Rust | Complejidad |
+| --- | --- | --- | --- |
+| Backtracking | `lis_bruteforce.py` | `lis_bruteforce.rs` | O(2ⁿ) |
+| Recursivo | `lis_recursive.py` | `lis_recursive.rs` | O(2ⁿ) |
+| Optimizaciones recursivas | `lis_recursive_opt_1.py`, `lis_recursive_opt_2.py` | — | O(2ⁿ) |
+| Variante recursiva con NumPy | `lis_recursive_np.py` | — | O(2ⁿ) |
+| Programación dinámica | `lis_dp_n2.py` | `lis_dp_n2.rs` | O(n²) |
+| Método de tails/patience sorting | `lis_nlogn.py` | `lis_nlogn.rs` | O(n log n) |
+
+Las implementaciones exponenciales son ejemplos didácticos. Utiliza tamaños
+de entrada pequeños: su tiempo de ejecución crece muy rápido.
+
+## Benchmarks y análisis
+
+[`benchmarks.sh`](benchmarks.sh) conserva los comandos utilizados para la
+charla. Revisa los intérpretes y tamaños seleccionados antes de ejecutar el
+script completo: algunos experimentos son intencionadamente lentos.
+
+Después de generar los resultados, abre el notebook de análisis con:
+
+```bash
+uv run marimo edit analysis.py
+```
+
+Las gráficas comparan distintos runtimes de Python, la ejecución de Rust en
+modo debug y release, y las optimizaciones recursivas incrementales utilizadas
+en la presentación.

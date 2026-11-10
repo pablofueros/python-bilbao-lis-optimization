@@ -13,14 +13,16 @@ def _():
 
 
 @app.cell
-def _(Any, Path, pd):
+def _(Path, pd):
+    from typing import Any
+
     def load_hyperfine_results(path: Path, label: str) -> pd.DataFrame:
         """Load hyperfine JSON results into a pandas DataFrame."""
         data: dict[str, Any] = pd.read_json(path).to_dict()
         results: list[dict[str, Any]] = data["results"]
         df = pd.DataFrame(results).T
 
-        # Extract n (for example, from "uv run python/01_lis_naive.py 50")
+        # Extract n (for example, from "uv run python python/lis_recursive.py 50")
         df["n"] = df["command"].str.extract(r"(\d+)$").astype(int)
         df["implementation"] = label
         return df[["n", "mean", "stddev", "min", "max", "implementation"]].sort_values("n")

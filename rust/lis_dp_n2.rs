@@ -67,7 +67,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Ok(seq) => seq,
         Err(_) => {
             eprintln!("Error: file '{}' does not exist.", file_path);
-            eprintln!("Run 'uv run python/generator.py' to generate the data.");
+            eprintln!("Run 'uv run python python/generator.py' to generate the data.");
             std::process::exit(1);
         }
     };

@@ -1,3 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Benchmark commands used for the talk. Review the selected runtimes and input
+# sizes before running the full suite: exponential implementations are slow.
+
 # PYTHON RECURSION 10<=N<=90
 hyperfine --shell=none --warmup=5 --min-runs=10  \
   --export-json="results/python_recursive.json"  \
@@ -80,11 +87,3 @@ hyperfine --shell=none --warmup=5 --min-runs=10  \
 hyperfine --shell=none --warmup=5 --min-runs=10  \
   --export-json="results/python_recursive_np_90.json"  \
   "uv run --no-project --python=PyPy python/lis_recursive_np.py 90"
-
-
-
-
-
-
-
-

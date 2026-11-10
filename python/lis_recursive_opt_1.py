@@ -49,7 +49,7 @@ def lis_recursive(
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage: uv run python/lis_recursive.py <N>")
+        print("Usage: uv run python python/lis_recursive_opt_1.py <N>")
         sys.exit(1)
 
     n = int(sys.argv[1])
@@ -59,7 +59,7 @@ def main() -> None:
         sequence = load_sequence_from_json(file_path)
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
-        print("Run 'uv run python/generator.py' to generate the data.")
+        print("Run 'uv run python python/generator.py' to generate the data.")
         sys.exit(1)
 
     result = lis_recursive(sequence)
